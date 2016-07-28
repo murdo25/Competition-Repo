@@ -1,0 +1,6 @@
+class AgentBaseClass:
+
+	def __init__(self, initial_epsilon, training_epochs):
+		#sets all initial learning variables
+		#or behavior parameters
+

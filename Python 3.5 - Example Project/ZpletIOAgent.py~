@@ -44,8 +44,8 @@ narrative = ret[0]
 p = ret[1]
 print("Z Machine Launched")
 
-#a = agentBaseClass.AgentBaseClass()
-a = bruteForceAgent.BruteForceAgent()
+a = agentBaseClass.AgentBaseClass()
+#a = bruteForceAgent.BruteForceAgent()
 
 while True:
     #command = action(narrative)
