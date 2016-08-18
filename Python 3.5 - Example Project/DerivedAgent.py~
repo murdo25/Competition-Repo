@@ -1,5 +1,0 @@
-
-import ZPletIOAgent
-
-class NancyAgent(agentBaseClass.AgentBaseClass):
-
