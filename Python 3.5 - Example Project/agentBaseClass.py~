@@ -10,6 +10,6 @@ class AgentBaseClass:
 		self.object_list = ['', 'chair', 'stick', 'banana']
 
 	def action(self, narrative):
-		time.sleep(1)		
+		time.sleep(0.5)		
 		command = rand.choice(self.verb_list) + " " + rand.choice(self.object_list)
 		return command.strip()

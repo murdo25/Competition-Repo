@@ -33,7 +33,7 @@ class BruteForceAgent(agentBaseClass.AgentBaseClass):
 
 
 	def action(self, narrative):
-		time.sleep(1)
+		#time.sleep(1)
 		if self.look_flag == 1:
 			self.last_state = self.current_state
 			self.look_flag = 0
