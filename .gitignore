@@ -1,2 +1,5 @@
 *~
 *.swp
+*.py~
+*.pyc
+scores.txt
