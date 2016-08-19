@@ -40,7 +40,7 @@ def action(narrative):
     return command
 
 
-total_steps_per_game = 10
+total_steps_per_game = 1000
 _ = open('scores.txt', 'w').close()
 
 list_of_games = os.listdir('../resources/')
@@ -67,14 +67,15 @@ for current_game in list_of_games:
 			steps_per_game += 1
 
 			
-			score_narrative = postCommand(p, command)
+			score_narrative = postCommand(p, "score")
 			score_pattern = '[0-9]+ [\(total ]*[points ]*[out ]*of [a maximum of ]*[a possible ]*[0-9]+'
 			matchObj = re.search(score_pattern, score_narrative, re.M|re.I)
+			print("THIS IS THE SCORE BIT: " + score_narrative + "END")
 			if matchObj != None:
 				score_words = matchObj.group().split(' ')
 				current_score = int(score_words[0]), int(score_words[len(score_words)-1])
 
 			scores_output_file = open('scores.txt', 'a')
-			scores_output_file.write(current_game + '\t' + str(steps_per_game) + '\t' + str(current_score) + '\n')
+			scores_output_file.write(current_game + '\t' + str(steps_per_game) + '\t' + str(current_score[0]) + '\n')
 			scores_output_file.close()
 

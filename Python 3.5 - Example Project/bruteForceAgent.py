@@ -53,6 +53,9 @@ class BruteForceAgent(agentBaseClass.AgentBaseClass):
 				print(self.current_state)
 			#self.last_action = rand.choice(self.action_list)			
 			action_probabilities = self.action_map[self.state_index(narrative)]
-			self.last_action = np.random.choice(self.action_list, p=action_probabilities/np.sum(action_probabilities))
-			return self.last_action.strip()
+			try:
+				self.last_action = np.random.choice(self.action_list, p=action_probabilities/np.sum(action_probabilities))
+				return self.last_action.strip()
+			except:
+				return "look"
 
