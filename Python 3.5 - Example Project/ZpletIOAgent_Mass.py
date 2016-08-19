@@ -40,8 +40,13 @@ def action(narrative):
     return command
 
 
+output_filename = 'scores.txt'
+composite_filename = 'scores_composite.txt'
+
 total_steps_per_game = 1000
-_ = open('scores.txt', 'w').close()
+_ = open(output_filename, 'w').close()
+_ = open(composite_filename, 'w').close()
+
 
 list_of_games = os.listdir('../resources/')
 for current_game in list_of_games:
@@ -75,7 +80,12 @@ for current_game in list_of_games:
 				score_words = matchObj.group().split(' ')
 				current_score = int(score_words[0]), int(score_words[len(score_words)-1])
 
-			scores_output_file = open('scores.txt', 'a')
-			scores_output_file.write(current_game + '\t' + str(steps_per_game) + '\t' + str(current_score[0]) + '\n')
+			scores_output_file = open(output_filename, 'a')
+			scores_output_file.write(current_game + '\t' + str(steps_per_game) + '\t' + str(current_score) + '\n')
 			scores_output_file.close()
+
+			if steps_per_game == total_steps_per_game-1:
+				composite_output_file = open(composite_filename, 'a')
+				composite_output_file.write(current_game + '\t' + str(steps_per_game) + '\t' + str(current_score) + '\n')
+				composite_output_file.close()				
 
