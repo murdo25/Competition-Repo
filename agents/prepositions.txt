@@ -1,0 +1,77 @@
+about
+above
+abroad
+across
+#adjacent to (US, rare)
+#after
+against
+#along
+around
+#as
+#astride
+at
+#atop, ontop
+#bar
+before
+behind
+below
+#ablow, allow (Scotland)
+beneath
+beside
+#besides
+between
+#beyond
+but
+by
+come
+down
+except
+for
+from
+in
+inside
+into
+#less
+#like
+#minus
+near
+#nearer (comparative), nearest (superlative)
+#notwithstanding (also postpositional)
+of
+off
+on
+onto
+opposite
+out
+outside
+over
+past
+#per
+#post (often hyphenated)
+#pre (often hyphenated)
+#pro (often hyphenated)
+#qua (formal)
+#re (often used with colon)
+save
+short
+since
+than
+through
+thru
+throughout
+#thruout (abbreviation)
+to
+toward, towards
+under
+underneath
+unlike
+until
+up
+upon
+upside
+versus
+#via
+with
+within
+without
+worth
