@@ -39,14 +39,18 @@ def action(narrative):
         command = command + " "
     return command
 
+output_filename = 'scores.txt'
 
 total_steps_per_game = 1000
-_ = open('scores.txt', 'w').close()
+_ = open(output_filename, 'w').close()
+p = None
 
 list_of_games = os.listdir('../resources/')
 for current_game in list_of_games:
 	if current_game.endswith('z5'):
 		print("Now playing: " + current_game)
+		if p != None:
+			p.terminate()
 
 		print("Booting Z Machine...")
 		ret = startZplet('../Example Project/lib3rd/ieee-cig-advent-1.5.jar','../resources/' + current_game)
@@ -75,7 +79,7 @@ for current_game in list_of_games:
 				score_words = matchObj.group().split(' ')
 				current_score = int(score_words[0]), int(score_words[len(score_words)-1])
 
-			scores_output_file = open('scores.txt', 'a')
-			scores_output_file.write(current_game + '\t' + str(steps_per_game) + '\t' + str(current_score[0]) + '\n')
+			scores_output_file = open(output_filename, 'a')
+			scores_output_file.write(current_game + '\t' + str(steps_per_game) + '\t' + str(current_score) + '\n')
 			scores_output_file.close()
 
