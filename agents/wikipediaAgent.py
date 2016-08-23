@@ -1,5 +1,5 @@
 #uses top n verbs from Wikipedia as its verb list
-#grabs objects from game text
+#grabs objects from game text and inventory
 #tries actions randomly
 
 import agentBaseClass
@@ -7,8 +7,9 @@ import numpy as np
 import time
 import random as rand
 import scholar.scholar as sch
+import nltk
 
-class BruteForceAgent(agentBaseClass.AgentBaseClass):
+class WikipediaAgent(agentBaseClass.AgentBaseClass):
 
 
 	def __init__(self):
@@ -25,46 +26,65 @@ class BruteForceAgent(agentBaseClass.AgentBaseClass):
 		self.verb_list.append('up')
 		self.verb_list.append('down')
 		self.verb_list.append('')
+	
 
-		self.look_flag = 0
+		self.num_states = 5000
 		self.last_state = ''
 		self.current_state = ''
 		self.last_action = ''
-		self.verb_probabilities = np.ones(len(self.verb_list))
-		self.object_probabilities = np.ones(len(self.object_list))
-		self.num_states = 5000
-		self.action_list = []
+		#self.verb_probabilities = np.ones(len(self.verb_list))
+		#self.object_probabilities = np.ones(len(self.object_list))
+		self.inventory_list = []
+		self.TWO_WORD_OBJECTS = True
+		self.inventory_count = 0
+		self.look_flag = 0
 
-		#self.action_probabilities = np.ones(len(self.action_map[0]))
-	
 	def state_index(self, narrative):
 		return abs(hash(narrative))%self.num_states
 
+	def find_objects(self, narrative):
+		#assumes an object is mutable if it appears as a noun in the game text
+		tokens = nltk.word_tokenize(narrative)
+		tags = nltk.pos_tag(tokens)
+		nouns = [word for word,pos in tags if word.isalnum() and (pos == 'NN' or pos == 'NNP' or pos == 'NNS' or pos == 'NNPS')]
+
+		if self.TWO_WORD_OBJECTS == True:
+			tokens = nltk.word_tokenize(narrative)
+			tags = nltk.pos_tag(tokens)
+			for i in range(0, len(tags) - 1):
+				if (tags[i][1] == "JJ") and (tags[i+1][1] in ["NN", "NNP", "NNS", "NNPS"]):
+					nouns.append(tags[i][0] + " " + tags[i+1][0])
+
+		return nouns
 
 	def action(self, narrative):
 		#time.sleep(1)
-		if self.look_flag == 1:
-			self.last_state = self.current_state
-			self.look_flag = 0
-			return "look"
+		if self.last_action == "inventory":
+			self.inventory_list = self.find_objects(narrative)
 		else:
-			self.look_flag = 1
-			self.current_state = narrative
-			if self.current_state == self.last_state:
-				#we didn't change state, so we don't
-				#want to use that verb/object combo again
-				print("No state change! Downsampling last action: " + self.last_action)
-				self.action_map[self.state_index(narrative)][self.action_list.index(self.last_action)] = 0
-				print(self.action_map[self.state_index(narrative)])
-			else:
-				print("STATE CHANGED!")
-				print(self.last_state)
-				print(self.current_state)
-			#self.last_action = rand.choice(self.action_list)			
-			action_probabilities = self.action_map[self.state_index(narrative)]
-			try:
-				self.last_action = np.random.choice(self.action_list, p=action_probabilities/np.sum(action_probabilities))
-				return self.last_action.strip()
-			except:
+			if self.look_flag == 1:
+				self.last_state = self.current_state
+				self.look_flag = 0
 				return "look"
+		
+			if self.inventory_count == 5:
+				self.inventory_count = 0
+				self.last_action = "inventory"
+				return "inventory"
+		
+		#update flags	
+		self.look_flag = 1
+		self.inventory_count = self.inventory_count + 1
+		self.last_state = self.current_state
+		self.current_state = narrative
+		
+		#select an action
+		objects = self.find_objects(narrative) + self.inventory_list + ['']
+
+		try:
+			self.last_action = rand.choice(self.verb_list) + " " + rand.choice(objects)
+			print ("Action is " + self.last_action.strip()) 				
+			return self.last_action.strip()
+		except:
+			return "look"
 

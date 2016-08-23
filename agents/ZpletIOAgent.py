@@ -4,6 +4,7 @@ import binascii
 
 import agentBaseClass
 import bruteForceAgent
+import wikipediaAgent
 
 def startZplet(jardir, gamedir):
     if(gamedir != ''):
@@ -39,16 +40,23 @@ def action(narrative):
     return command
 
 print("Booting Z Machine...")
-ret = startZplet('../Example Project/lib3rd/ieee-cig-advent-1.5.jar','../resources/monkey-and-bananas-v1.z8')
+#ret = startZplet('../Example Project/lib3rd/ieee-cig-advent-1.5.jar','../resources/monkey-and-bananas-v1.z8')
+ret = startZplet('../Example Project/lib3rd/ieee-cig-advent-1.5.jar','../resources/zork1.z5')
 narrative = ret[0]
 p = ret[1]
 print("Z Machine Launched")
 
 #a = agentBaseClass.AgentBaseClass()
-a = bruteForceAgent.BruteForceAgent()
+#a = bruteForceAgent.BruteForceAgent()
+a = wikipediaAgent.WikipediaAgent()
 
+count = 0
 while True:
     #command = action(narrative)
+    count = count + 1
+    if count > 100:
+        count = 0
+        input("pause")
     print("Narrative: " + narrative)
     command = a.action(narrative)
     narrative = postCommand(p, command)
