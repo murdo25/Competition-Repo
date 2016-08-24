@@ -51,3 +51,26 @@ Additional information can be found on the [competition website](http://atkrye.g
 
 
 
+
+
+install:
+
+-pip3 
+  word2vec
+  nltk   and run command $ python3 -m nltk.downloader all
+  
+-Scholar
+  https://github.com/danielricks/scholar
+  + files for scholar located on the pccfs
+
+-Parsey Mc Parseface 
+
+
+
+
+
+
+
+
+
+
