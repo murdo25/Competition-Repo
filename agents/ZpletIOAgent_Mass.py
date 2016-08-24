@@ -5,6 +5,9 @@ import os, re
 
 import agentBaseClass
 import bruteForceAgent
+import wikipediaAgent
+import packratAgent
+import wikipediaPlus
 
 def startZplet(jardir, gamedir):
     if(gamedir != ''):
@@ -39,10 +42,12 @@ def action(narrative):
         command = command + " "
     return command
 
-output_filename = 'scores.txt'
+output_filename = 'wikipediaPlus_scores.txt'
+composite_filename = 'wikipediaPlus_composite_scores.txt'
 
-total_steps_per_game = 1000
+total_steps_per_game = 100000
 _ = open(output_filename, 'w').close()
+_ = open(composite_filename, 'w').close()
 p = None
 
 list_of_games = os.listdir('../resources/')
@@ -59,7 +64,10 @@ for current_game in list_of_games:
 		print("Z Machine Launched")
 
 		#a = agentBaseClass.AgentBaseClass()
-		a = bruteForceAgent.BruteForceAgent()
+		#a = bruteForceAgent.BruteForceAgent()
+		#a = wikipediaAgent.WikipediaAgent()
+		#a = packratAgent.PackRatAgent()
+		a = wikipediaPlus.WikipediaPlus()
 
 		steps_per_game = 0
 		current_score = 0
@@ -83,3 +91,7 @@ for current_game in list_of_games:
 			scores_output_file.write(current_game + '\t' + str(steps_per_game) + '\t' + str(current_score) + '\n')
 			scores_output_file.close()
 
+			if steps_per_game == total_steps_per_game-1:
+				composite_output_file = open(composite_filename, 'a')
+				composite_output_file.write(current_game + '\t' + str(steps_per_game) + '\t' + str(current_score) + '\n')
+				composite_output_file.close()	
