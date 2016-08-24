@@ -14,6 +14,7 @@ class BrutePrepAgent(agentBaseClass.AgentBaseClass):
 		self.verb_indx = 0
 		self.object_list = ['', 'chair', 'stick', 'banana']
 		self.object_indx = 0
+		self.object_indx2 = 0
 		self.prep_list = ['on', 'in', 'by', 'next to', 'with', 'to']
 		self.prep_indx = 0
 		self.look_flag = 0
@@ -29,15 +30,53 @@ class BrutePrepAgent(agentBaseClass.AgentBaseClass):
 				self.action_list.append(v + " " + o)
 		self.action_map = np.ones((self.num_states, len(self.action_list))) #action probabilities
 										    #for each state
-
+		
 		#self.action_probabilities = np.ones(len(self.action_map[0]))
 	
 	def state_index(self, narrative):
 		return abs(hash(narrative))%self.num_states
-
-	def getVNPN(self):
 		
+		
+	def getVerb():
+		Vrb = self.verb_list[self.verb_indx]
+		if len(self.verb_list) > self.verb_indx:
+			self.verb_indx += 1
+		else:
+			set.verb_indx = 0
+			# increse the next sets indx by 1
+			if (self.object_indx + 1) < len(self.object_list):
+				set.object_indx += 1
+		
+		return Vrb
+		
+	
+	def getNoun():
+		N1 = self.object_list[self.object_indx]
 
+		if len(self.object_list) > self.object_indx:
+			self.object_indx += 1
+		else:
+			set.object_indx = 0
+			# increse the next sets indx by 1
+			if (self.prep_indx + 1) < len(self.prep_list):
+				set.object_indx += 1
+		
+		return N1
+		
+	#Verb Noun Prep Noun	
+	def getVNPN(self):
+	
+		V = getVerb()
+		N = getNoun()
+		P = self.prep_list[self.prep_indx]
+		self.prep_indx += 1
+		
+		N2 = self.object_list[self.object_indx2]
+		self.object_indx2 += 1		
+		
+		move = (V + ' ' + N + ' ' + P + ' ' + N2)
+		# if checkBleu(move) != true  than try again    //Add later
+		return move
 
 
 
