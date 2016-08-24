@@ -1,47 +1,24 @@
-#uses top n verbs from Wikipedia as its verb list
-#grabs objects from game text and inventory
-#tries actions randomly
+#uses hand-picked verbs - tries to acquire things, open things, unlock things
+#selects objects from game text and inventory
 
 import agentBaseClass
 import numpy as np
 import time
 import random as rand
-import scholar.scholar as sch
 import nltk
 
-class WikipediaAgent(agentBaseClass.AgentBaseClass):
+class PackRatAgent(agentBaseClass.AgentBaseClass):
 
 
 	def __init__(self):
-		self.scholar = sch.Scholar()
-		self.verb_list=self.scholar.get_most_common_words('VB', 200)
-
-		if 'save' in self.verb_list:
-			self.verb_list.remove('save') #to prevent agent from trying to save the game...		
-		if 'quit' in self.verb_list:
-			self.verb_list.remove('quit') #to prevent agent from trying to quit the game...		
-		if 'restart' in self.verb_list:
-			self.verb_list.remove('restart') #to prevent agent from trying to restart the game...		
-
-		self.verb_list.append('north')
-		self.verb_list.append('south')
-		self.verb_list.append('west')
-		self.verb_list.append('east')
-		self.verb_list.append('northwest')
-		self.verb_list.append('southwest')
-		self.verb_list.append('northeast')
-		self.verb_list.append('southeast')
-		self.verb_list.append('up')
-		self.verb_list.append('down')
-		self.verb_list.append('')
-	
+		self.verb_list=['get', 'drop', 'open', 'unlock', 'climb', 'descend', 'enter', 'exit', 'attack', 'up', 'down', 'north', 'south', 'east', 'west', 'northwest', 'southwest', 'northeast', 'southeast', '']
+		self.verb_probabilities=[10, 10, 5, 5, 5, 5, 5, 5, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+		self.verb_probabilities=self.verb_probabilities/np.sum(self.verb_probabilities)
 
 		self.num_states = 5000
 		self.last_state = ''
 		self.current_state = ''
 		self.last_action = ''
-		#self.verb_probabilities = np.ones(len(self.verb_list))
-		#self.object_probabilities = np.ones(len(self.object_list))
 		self.inventory_list = []
 		self.TWO_WORD_OBJECTS = True
 		self.inventory_count = 0
@@ -90,7 +67,7 @@ class WikipediaAgent(agentBaseClass.AgentBaseClass):
 		objects = self.find_objects(narrative) + self.inventory_list + ['']
 
 		try:
-			self.last_action = rand.choice(self.verb_list) + " " + rand.choice(objects)
+			self.last_action = np.random.choice(self.verb_list, p=self.verb_probabilities) + " " + rand.choice(objects)
 			print ("Action is " + self.last_action.strip()) 				
 			return self.last_action.strip()
 		except:

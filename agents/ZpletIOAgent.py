@@ -1,10 +1,13 @@
 from subprocess import Popen, PIPE, STDOUT
 from random import randint
 import binascii
+import time
 
 import agentBaseClass
 import bruteForceAgent
 import wikipediaAgent
+import packratAgent
+import wikipediaPlus
 
 def startZplet(jardir, gamedir):
     if(gamedir != ''):
@@ -39,6 +42,13 @@ def action(narrative):
         command = command + " "
     return command
 
+#a = agentBaseClass.AgentBaseClass()
+#a = bruteForceAgent.BruteForceAgent()
+#a = wikipediaAgent.WikipediaAgent()
+#a = packratAgent.PackRatAgent()
+a = wikipediaPlus.WikipediaPlus()
+#print("Implementing agent ") + type(a)
+
 print("Booting Z Machine...")
 #ret = startZplet('../Example Project/lib3rd/ieee-cig-advent-1.5.jar','../resources/monkey-and-bananas-v1.z8')
 ret = startZplet('../Example Project/lib3rd/ieee-cig-advent-1.5.jar','../resources/zork1.z5')
@@ -46,17 +56,14 @@ narrative = ret[0]
 p = ret[1]
 print("Z Machine Launched")
 
-#a = agentBaseClass.AgentBaseClass()
-#a = bruteForceAgent.BruteForceAgent()
-a = wikipediaAgent.WikipediaAgent()
-
 count = 0
 while True:
     #command = action(narrative)
-    count = count + 1
-    if count > 100:
-        count = 0
-        input("pause")
+#    count = count + 1
+#    if count > 100:
+#        count = 0
+#        input("pause")
+#    Sleep(500)
     print("Narrative: " + narrative)
     command = a.action(narrative)
     narrative = postCommand(p, command)

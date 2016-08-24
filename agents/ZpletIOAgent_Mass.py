@@ -6,6 +6,8 @@ import os, re
 import agentBaseClass
 import bruteForceAgent
 import wikipediaAgent
+import packratAgent
+import wikipediaPlus
 
 def startZplet(jardir, gamedir):
     if(gamedir != ''):
@@ -40,10 +42,10 @@ def action(narrative):
         command = command + " "
     return command
 
-output_filename = 'scores.txt'
-composite_filename = 'composite_scores.txt'
+output_filename = 'wikipediaPlus_scores.txt'
+composite_filename = 'wikipediaPlus_composite_scores.txt'
 
-total_steps_per_game = 1000
+total_steps_per_game = 100000
 _ = open(output_filename, 'w').close()
 _ = open(composite_filename, 'w').close()
 p = None
@@ -63,7 +65,9 @@ for current_game in list_of_games:
 
 		#a = agentBaseClass.AgentBaseClass()
 		#a = bruteForceAgent.BruteForceAgent()
-		a = wikipediaAgent.WikipediaAgent()
+		#a = wikipediaAgent.WikipediaAgent()
+		#a = packratAgent.PackRatAgent()
+		a = wikipediaPlus.WikipediaPlus()
 
 		steps_per_game = 0
 		current_score = 0
