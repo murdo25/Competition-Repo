@@ -1,5 +1,5 @@
-#tracks which actions have been tried in which state.
-#any action that failed to produce a state change is rejected
+#Tracks which actions have been tried in which state.
+#Any action that failed to produce a state change is rejected
 
 import agentBaseClass
 import numpy as np
@@ -36,43 +36,71 @@ class BrutePrepAgent(agentBaseClass.AgentBaseClass):
 	def state_index(self, narrative):
 		return abs(hash(narrative))%self.num_states
 		
-		
+	#Return Verb
 	def getVerb():
-		Vrb = self.verb_list[self.verb_indx]
-		if len(self.verb_list) > self.verb_indx:
+		if len(self.verb_list) > (self.verb_indx +1):
+			Vrb = self.verb_list[self.verb_indx]
 			self.verb_indx += 1
 		else:
-			set.verb_indx = 0
+			Vrb = self.verb_list[len(self.verb_list) - 1]
+			self.verb_indx = 0
 			# increse the next sets indx by 1
-			if (self.object_indx + 1) < len(self.object_list):
-				set.object_indx += 1
-		
+			#if (self.object_indx +1) < len(self.object_list):
+			self.object_indx += 1
+			
 		return Vrb
 		
-	
+	#Return Noun 1	
 	def getNoun():
-		N1 = self.object_list[self.object_indx]
-
-		if len(self.object_list) > self.object_indx:
-			self.object_indx += 1
+		if len(self.object_list) > (1 + self.object_indx):
+			N1 = self.object_list[self.object_indx]
+			
 		else:
-			set.object_indx = 0
+			N1 = self.object_list[len(self.object_list) -1]
+			self.object_indx = 0
 			# increse the next sets indx by 1
-			if (self.prep_indx + 1) < len(self.prep_list):
-				set.object_indx += 1
+			#if (self.prep_indx +1) < len(self.prep_list):
+			self.prep_indx += 1
 		
 		return N1
+		
+		
+	#Return Preposition	
+	def getPrep():
+		if len(self.prep_list) > (1 + self.prep_indx):
+			P = self.prep_list[self.prep_indx]
+		
+		else:
+			P = self.prep_list[len(self.prep_list) -1]
+			self.prep_indx = 0	
+			#if (self.object_indx2 + 1) < len(self.object_list):
+			self.object_indx2 += 1
+		
+		return P
+		
+		
+	#Return Noun 2	
+	def getNoun2():
+		if len(self.object_list) > (1 + self.object_indx2):
+			N2 = self.object_list[self.object_indx2]
+			
+		else:
+			#KILL EVERYTHING, YOU'VE GONE THROUGH EVERY COMBO
+			
+		return N2
+		
+		
+		
+		
+		
 		
 	#Verb Noun Prep Noun	
 	def getVNPN(self):
 	
 		V = getVerb()
 		N = getNoun()
-		P = self.prep_list[self.prep_indx]
-		self.prep_indx += 1
-		
-		N2 = self.object_list[self.object_indx2]
-		self.object_indx2 += 1		
+		P = getPrep()
+		N2 = getNoun2()
 		
 		move = (V + ' ' + N + ' ' + P + ' ' + N2)
 		# if checkBleu(move) != true  than try again    //Add later
