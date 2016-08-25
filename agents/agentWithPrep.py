@@ -54,6 +54,9 @@ class BrutePrepAgent(agentBaseClass.AgentBaseClass):
 	def getNoun():
 		if len(self.object_list) > (1 + self.object_indx):
 			N1 = self.object_list[self.object_indx]
+		#set up the rest like this!!! :O
+		elf len(self.object_list) == (1 + self.object_indx):
+			N1 = self.object_list[len(self.object_list) -1]
 			
 		else:
 			N1 = self.object_list[len(self.object_list) -1]
@@ -61,7 +64,8 @@ class BrutePrepAgent(agentBaseClass.AgentBaseClass):
 			# increse the next sets indx by 1
 			#if (self.prep_indx +1) < len(self.prep_list):
 			self.prep_indx += 1
-		
+
+			
 		return N1
 		
 		
@@ -85,6 +89,7 @@ class BrutePrepAgent(agentBaseClass.AgentBaseClass):
 			N2 = self.object_list[self.object_indx2]
 			
 		else:
+			N2 = self.object_list[self.object_indx2]
 			#KILL EVERYTHING, YOU'VE GONE THROUGH EVERY COMBO
 			
 		return N2
