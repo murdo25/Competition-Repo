@@ -30,3 +30,17 @@ class AgentBaseClass:
 		#for each string, check against vector matrix and delete bad strings
 
 		return sents
+		
+		#Verb Prep Noun	
+	def getVPN(self):
+		sents = []
+		
+		for v in self.verb_list:
+			for p in self.prep_list:
+				for n in self.object_list:
+						sentence = "{} {} {}".format(v, p, n)
+						sents.append(sentence)
+		
+		#for each string, check against vector matrix and delete bad strings
+
+		return sents
