@@ -15,3 +15,18 @@ class AgentBaseClass:
 		time.sleep(0.5)		
 		command = rand.choice(self.verb_list) + " " + rand.choice(self.object_list)
 		return command.strip()
+		
+	#Verb Noun Prep Noun	
+	def getVNPN(self):
+		sents = []
+		
+		for v in self.verb_list:
+			for n in self.object_list:
+				for p in self.prep_list:
+					for n2 in self.object_list:
+						sentence = "{} {} {} {}".format(v, n, p, n2)
+						sents.append(sentence)
+		
+		#for each string, check against vector matrix and delete bad strings
+
+		return sents
