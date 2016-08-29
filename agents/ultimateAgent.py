@@ -26,8 +26,8 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 	def __init__(self):
 		self.scholar = sch.Scholar()
 		#self.verb_list=self.scholar.get_most_common_words('VB', 200)
-		self.verb_list = ['get', 'drop', 'put', 'open', 'close', 'eat', 'throw', 'unlock', 'attack', 'kill', 'push', 'move', 'look at', 'climb', 'wave', 'break', 'light', 'unlight', 'repair', 'heal']
-		#self.verb_list = ['get', 'eat', 'attack']
+		self.verb_list = ['throw', 'spray', 'stab', 'slay', 'open', 'pierce', 'thrust', 'exorcise', 'place', 'jump', 'take', 'make', 'read', 'strangle', 'swallow', 'slide', 'wave', 'look', 'dig', 'pull', 'put', 'rub', 'fight', 'ask', 'score', 'apply', 'take', 'knock', 'block', 'kick', 'step', 'break', 'wind', 'blow', 'crack', 'drop', 'blast', 'leave', 'yell', 'skip', 'stare', 'hurl', 'hit', 'kill', 'glass', 'engrave', 'bottle', 'pour', 'feed', 'hatch', 'swim', 'spray', 'melt', 'cross', 'insert', 'lean', 'sit', 'move', 'fasten', 'play', 'drink', 'climb', 'walk', 'consume', 'kiss', 'startle', 'shout', 'close', 'cast', 'set', 'drive', 'lift', 'strike', 'startle', 'catch', 'board', 'speak', 'think', 'get', 'answer', 'tell', 'feel', 'get', 'turn', 'listen', 'read', 'watch', 'wash', 'purchase', 'do', 'sleep', 'fasten', 'drag', 'swing', 'empty', 'switch', 'slip', 'twist', 'shoot', 'slice', 'read', 'burn', 'hop']
+		self.verb_list += ['wait', 'point', 'light', 'unlight']
 	
 		if 'save' in self.verb_list:
 			self.verb_list.remove('save') #to prevent agent from trying to save the game...		
@@ -161,6 +161,10 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 					tryList.append(v)
 
 		if len(tryList) == 0:
+			if obj not in self.success[game_text].keys():
+				self.success[game_text][obj] = {}
+				for v in self.verb_list:
+					self.success[game_text][obj][v] = 0.0
 			tryList = list(self.success[game_text][obj].keys())
 
 		if len(tryList) == 0:
