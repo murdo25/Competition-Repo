@@ -36,7 +36,6 @@ class AgentBaseClass:
 		return sents
 	
         #look in box
-        #
 	#Verb Prep Noun, return list	
 	def getVPN(self):
 		sents = []
@@ -51,11 +50,13 @@ class AgentBaseClass:
 
 		return sents
 
+
 	#fill a dictionary with a <str,set> combo
 	def updatePrepositionDictionary(self,verb,prepSet):
 		self.VPD[verb] = prepSet
 		pass
-	
+
+
 	#using the dictionary, return a list of commands
 	def getCommands(self):
 	
@@ -75,8 +76,25 @@ class AgentBaseClass:
 		
 		return sents
 							
-	
 							
+	#using the dictionary, return a list of commands
+	def getCommands(self,verbs,objects):
+	
+		sents = []
+		#Verb
+		for v in verbs:
+			#Noun
+			for obj in objects:
+				#Dictionary of prepositions according to verbs
+				for key in VPD.keys:
+					#set or list of prepositions
+					for prep in VPD[key]:
+						#second Noun
+						for obj2 in objects:
+							sentence = "{} {} {} {}". format(v, obj, prep, obj2)
+							sents.append(sentence)
+		
+		return sents
 							
 							
 							
