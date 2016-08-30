@@ -54,17 +54,17 @@ Additional information can be found on the [competition website](http://atkrye.g
 
 1. Verify you have installed the following dependencies:
 
-a. python3 (`sudo apt-get install python3-pip`)
+  python3 (`sudo apt-get install python3-pip`)
 
-b. numpy (`sudo pip3 install numpy`)
+  numpy (`sudo pip3 install numpy`)
 
-c. cython (`sudo pip3 install cython`)
+  cython (`sudo pip3 install cython`)
 
-d. word2vec (`sudo pip3 install word2vec`)
+  word2vec (`sudo pip3 install word2vec`)
 
-e. nltk (`sudo pip3 install nltk`)
+  nltk (`sudo pip3 install nltk`)
 
-f. nltk datasets (`python3 -m nltk.downloader all`)
+  nltk datasets (`python3 -m nltk.downloader all`)
 
 2. Clone [Scholar](https://github.com/danielricks/scholar) into the agents/scholar folder.
 
