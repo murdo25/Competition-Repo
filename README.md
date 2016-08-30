@@ -53,11 +53,16 @@ Additional information can be found on the [competition website](http://atkrye.g
 <b><h5>To run this code:</h5></b>
 
 Verify you have installed the following dependencies:
-python3 (`sudo apt-get install python3-pip`).
+python3 (`sudo apt-get install python3-pip`)
+
 numpy (`sudo pip3 install numpy`)
+
 cython (`sudo pip3 install cython`)
+
 word2vec (`sudo pip3 install word2vec`)
+
 nltk (`sudo pip3 install nltk`)
+
 nltk datasets (`python3 -m nltk.downloader all`)
 
 Clone [Scholar](https://github.com/danielricks/scholar) into the agents/scholar folder.
