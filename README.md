@@ -68,4 +68,4 @@ Additional information can be found on the [competition website](http://atkrye.g
 
 2. Clone [Scholar](https://github.com/danielricks/scholar) into the agents/scholar folder.
 
-3. Go to the "agents" folder. Run `python3 ZpletIOAgent.py`.
+3. Go to the "agents" folder. Run `python3 ZpletIOAgent.py`
