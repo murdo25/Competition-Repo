@@ -27,7 +27,7 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 		self.scholar = sch.Scholar()
 		#self.verb_list=self.scholar.get_most_common_words('VB', 200)
 		self.verb_list = ['throw', 'spray', 'stab', 'slay', 'open', 'pierce', 'thrust', 'exorcise', 'place', 'jump', 'take', 'make', 'read', 'strangle', 'swallow', 'slide', 'wave', 'look', 'dig', 'pull', 'put', 'rub', 'fight', 'ask', 'score', 'apply', 'take', 'knock', 'block', 'kick', 'step', 'break', 'wind', 'blow', 'crack', 'drop', 'blast', 'leave', 'yell', 'skip', 'stare', 'hurl', 'hit', 'kill', 'glass', 'engrave', 'bottle', 'pour', 'feed', 'hatch', 'swim', 'spray', 'melt', 'cross', 'insert', 'lean', 'sit', 'move', 'fasten', 'play', 'drink', 'climb', 'walk', 'consume', 'kiss', 'startle', 'shout', 'close', 'cast', 'set', 'drive', 'lift', 'strike', 'startle', 'catch', 'board', 'speak', 'think', 'get', 'answer', 'tell', 'feel', 'get', 'turn', 'listen', 'read', 'watch', 'wash', 'purchase', 'do', 'sleep', 'fasten', 'drag', 'swing', 'empty', 'switch', 'slip', 'twist', 'shoot', 'slice', 'read', 'burn', 'hop', 'rub', 'ring', 'swipe', 'display', 'scrub', 'hug', 'operate', 'touch', 'sit', 'sweep', 'fix', 'walk', 'crack', 'skip']
-		self.verb_list += ['wait', 'point', 'light', 'unlight', 'use', 'turn on', 'turn off', 'ignite', 'wear', 'remove']
+		self.verb_list += ['wait', 'point', 'light', 'unlight', 'use', 'ignite', 'wear', 'remove', 'unlock', 'lock', 'examine', 'exit']
 	
 		if 'save' in self.verb_list:
 			self.verb_list.remove('save') #to prevent agent from trying to save the game...		
@@ -133,11 +133,7 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 		
 		return max_verbs
 
-	def getVerb(self, game_text, input_object):
-		#returns a verb that:
-		# (A) satisfies the active search criterion
-		# (B) is in the agent's verb_list
-		# (C) has not already been tried in this state with this object	
+	def getTryList(self, game_text, input_object):
 
 		obj = input_object
 		if len(input_object.split()) > 1:
@@ -147,7 +143,7 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 
 		#matching_verbs = self.verbFinder.verbsForWord(obj, 100)
 		
-		matching_verbs = self.scholar.get_verbs(obj, 100)
+		matching_verbs = self.scholar.get_verbs(obj, 30)
 		for i in range(len(matching_verbs)):
 			matching_verbs[i] = matching_verbs[i][:-3] 
 
@@ -159,6 +155,15 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 			if v in self.verb_list:
 				if self.alreadyTried[game_text][input_object][v] == 0:
 					tryList.append(v)
+
+		#certain verbs are just always in the try list
+		#because they are so useful
+		if 'open' not in tryList and self.alreadyTried[game_text][input_object]['open'] == 0:
+			tryList.append('open')
+		if 'get' not in tryList and self.alreadyTried[game_text][input_object]['get'] == 0:
+			tryList.append('get')
+		if 'put' not in tryList and self.alreadyTried[game_text][input_object]['put'] == 0:
+			tryList.append('put')
 
 		if len(tryList) == 0:
 			if obj not in self.success[game_text].keys():
@@ -178,7 +183,19 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 		print(tryList)
 #		input("pause")
 
+		return tryList
+
+	def getVerb(self, game_text, input_object):
+		#returns a verb that:
+		# (A) satisfies the active search criterion
+		# (B) is in the agent's verb_list
+		# (C) has not already been tried in this state with this object	
+
+		tryList = self.getTryList(game_text, input_object)	
+
 		vrb = rand.choice(tryList)
+		#vrb = tryList[0]
+
 		return vrb
 
 	def chooseAction(self, game_text):
@@ -204,14 +221,6 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 			for v in self.verb_list:
 				self.success[game_text][obj][v] = 0
 
-#		print("CHOOSEACTiON")
-#		print("object list is ")
-#		print(objects)
-#		print(obj)
-#		print(self.alreadyTried[game_text][obj])
-#		print(self.success[game_text])
-#		input("pause")
-		
 		#check to see whether the last action was successful
 		if self.last_state != self.current_state:
 #			print("STATE CHANGE: " + self.last_state + " --> " + self.current_state)
@@ -223,17 +232,31 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 				for v in self.verb_list:
 					self.success[self.last_state][self.last_object][v] = 0
 			self.success[self.last_state][self.last_object][self.last_verb] = 1
-#		else:
-#			print("No state change: " + self.current_state)
-#		print(self.success[self.last_state])
-#		input("pause")
 		
 		#choose the next action
-		vrb = self.getVerb(game_text, obj)		
-		self.alreadyTried[game_text][obj][vrb] = 1
-		self.last_verb = vrb
-		self.last_object = obj
-		return vrb + ' ' + obj
+		r = rand.randint(0, 1)
+		if r == 0:
+			#get a verb object combo
+			vrb = self.getVerb(game_text, obj)		
+			self.alreadyTried[game_text][obj][vrb] = 1
+			self.last_verb = vrb
+			self.last_object = obj
+			return vrb + ' ' + obj
+		else:
+			#get a verb/preposition combo
+			commands = self.getCommands(self.getTryList(game_text, obj), [obj])
+			action = rand.choice(commands)
+		#	self.last_verb = action.split()[:-1]
+		#	self.last_object = [obj]
+		#	self.alreadyTried[game_text][last_object][self.last_verb] = 1
+			print("COMMANDS")
+			print(commands)
+			print("action is " + action)
+		#	print("last verb is " + self.last_verb)
+		#	print("Last object is " + self.last_object)
+			input("pause")
+			return action
+			
 
 	def action(self, narrative):
 		if self.last_action == "inventory":

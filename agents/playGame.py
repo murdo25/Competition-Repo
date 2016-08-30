@@ -48,13 +48,14 @@ def action(narrative):
 #a = wikipediaAgent.WikipediaAgent()
 #a = packratAgent.PackRatAgent()
 #a = wikipediaPlus.WikipediaPlus()
-a = ultimateAgent.UltimateAgent()
+#a = ultimateAgent.UltimateAgent()
 #print("Implementing agent ") + type(a)
 
 print("Booting Z Machine...")
-ret = startZplet('../Example Project/lib3rd/ieee-cig-advent-1.5.jar','../resources/monkey-and-bananas-v1.z8')
 #ret = startZplet('../Example Project/lib3rd/ieee-cig-advent-1.5.jar','../resources/monkey-and-bananas-v1.z8')
+#ret = startZplet('../Example Project/lib3rd/ieee-cig-advent-1.5.jar','../resources/Chaos.z5')
 #ret = startZplet('../Example Project/lib3rd/ieee-cig-advent-1.5.jar','../resources/lily.z5')
+ret = startZplet('../Example Project/lib3rd/ieee-cig-advent-1.5.jar','../resources/jewel.z5')
 narrative = ret[0]
 p = ret[1]
 print("Z Machine Launched")
@@ -62,12 +63,8 @@ print("Z Machine Launched")
 count = 0
 while True:
     #command = action(narrative)
-#    count = count + 1
-#    if count > 100:
-#        count = 0
-#        input("pause")
-#    Sleep(500)
     print("Narrative: " + narrative)
-    command = a.action(narrative)
+    command = input("?") 
+    #command = a.action(narrative)
     narrative = postCommand(p, command)
 

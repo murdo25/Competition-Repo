@@ -8,6 +8,7 @@ import bruteForceAgent
 import wikipediaAgent
 import packratAgent
 import wikipediaPlus
+import ultimateAgent
 
 def startZplet(jardir, gamedir):
     if(gamedir != ''):
@@ -42,10 +43,10 @@ def action(narrative):
         command = command + " "
     return command
 
-output_filename = 'wikipediaPlus_scores.txt'
-composite_filename = 'wikipediaPlus_composite_scores.txt'
+output_filename = 'ultimateAgent_scores_30_analogies_bestFirst.txt'
+composite_filename = 'ultimateAgent_composite_scores_30_analogies_bestFirst.txt'
 
-total_steps_per_game = 100000
+total_steps_per_game = 1000
 _ = open(output_filename, 'w').close()
 _ = open(composite_filename, 'w').close()
 p = None
@@ -67,7 +68,8 @@ for current_game in list_of_games:
 		#a = bruteForceAgent.BruteForceAgent()
 		#a = wikipediaAgent.WikipediaAgent()
 		#a = packratAgent.PackRatAgent()
-		a = wikipediaPlus.WikipediaPlus()
+		#a = wikipediaPlus.WikipediaPlus()
+		a = ultimateAgent.UltimateAgent()
 
 		steps_per_game = 0
 		current_score = 0
@@ -80,7 +82,7 @@ for current_game in list_of_games:
 
 			
 			score_narrative = postCommand(p, "score")
-			score_pattern = '[0-9]+ [\(total ]*[points ]*[out ]*of [a maximum of ]*[a possible ]*[0-9]+'
+			score_pattern = '[-]*[0-9]+ [\(total ]*[points ]*[out ]*of [a maximum of ]*[a possible ]*[0-9]+'
 			matchObj = re.search(score_pattern, score_narrative, re.M|re.I)
 			print("THIS IS THE SCORE BIT: " + score_narrative + "END")
 			if matchObj != None:

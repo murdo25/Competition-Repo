@@ -48,8 +48,8 @@ class WikipediaPlus(agentBaseClass.AgentBaseClass):
 		self.look_flag = 0
 		self.exploration_counts = {}
 
-		self.corpus_name = "corpora/Wikipedia_first_100000_lines.txt"
-		#self.corpus_name = "corpora/classic_books.txt"
+		#self.corpus_name = "corpora/Wikipedia_first_100000_lines.txt"
+		self.corpus_name = "corpora/classic_books.txt"
 		self.totalCount = {}
 		for v in self.verb_list:
 			self.totalCount[v] = 0.0

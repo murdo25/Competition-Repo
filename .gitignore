@@ -1,7 +1,9 @@
 *~
+resources/.nfs0000000000118225000001e5
 *.swp
 *.py~
 *.pyc
+*.txt
 scores.txt
-agents/scholar
+agents/scholar/
 agents/__pycache__

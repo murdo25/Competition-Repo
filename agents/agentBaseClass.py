@@ -66,9 +66,9 @@ class AgentBaseClass:
 			#Noun
 			for obj in self.object_list:
 				#Dictionary of prepositions according to verbs
-				for key in VPD.keys:
+				for key in self.VPD.keys:
 					#set or list of prepositions
-					for prep in VPD[key]:
+					for prep in self.VPD[key]:
 						#second Noun
 						for obj2 in self.object_list:
 							sentence = "{} {} {} {}". format(v, obj, prep, obj2)
@@ -86,9 +86,9 @@ class AgentBaseClass:
 			#Noun
 			for obj in objects:
 				#Dictionary of prepositions according to verbs
-				for key in VPD.keys:
+				for key in self.VPD.keys:
 					#set or list of prepositions
-					for prep in VPD[key]:
+					for prep in self.VPD[key]:
 						#second Noun
 						for obj2 in objects:
 							sentence = "{} {} {} {}". format(v, obj, prep, obj2)
