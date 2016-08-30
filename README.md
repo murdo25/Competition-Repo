@@ -50,27 +50,22 @@ It's possible to try out various different Z-Machine adventure files - many are 
 Additional information can be found on the [competition website](http://atkrye.github.io/IEEE-CIG-Text-Adventurer-Competition/).
 
 
+<b><h5>To run this code:</h5></b>
 
+1. Verify you have installed the following dependencies:
 
+  python3 (`sudo apt-get install python3-pip`)
 
-install:
+  numpy (`sudo pip3 install numpy`)
 
--pip3 
-  word2vec
-  nltk   and run command $ python3 -m nltk.downloader all
-  
--Scholar
-  https://github.com/danielricks/scholar
-  + files for scholar located on the pccfs
+  cython (`sudo pip3 install cython`)
 
--Parsey Mc Parseface 
+  word2vec (`sudo pip3 install word2vec`)
 
+  nltk (`sudo pip3 install nltk`)
 
+  nltk datasets (`python3 -m nltk.downloader all`)
 
+2. Clone [Scholar](https://github.com/danielricks/scholar) into the agents/scholar folder.
 
-
-
-
-
-
-
+3. Go to the "agents" folder. Run `python3 ZpletIOAgent.py`

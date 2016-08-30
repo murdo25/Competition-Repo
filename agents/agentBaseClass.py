@@ -8,15 +8,19 @@ class AgentBaseClass:
 	def __init__(self):
 		self.verb_list = ['n', 's', 'e', 'w', 'up', 'down', 'get', 'drop', 'climb on', 'wave', 'eat']
 		self.object_list = ['', 'chair', 'stick', 'banana']
-		# mod by ben for the additional prepositions
+		
+		#mod by ben for the additional prepositions
 		self.preposition_list = ['with', 'in', 'at', 'above', 'under']
+		#Verb and Preposition Dictionary
+		self.VPD = {}
+
 
 	def action(self, narrative):
 		time.sleep(0.5)		
 		command = rand.choice(self.verb_list) + " " + rand.choice(self.object_list)
 		return command.strip()
 		
-	#Verb Noun Prep Noun	
+	#Verb Noun Prep Noun, return list	
 	def getVNPN(self):
 		sents = []
 		
@@ -30,8 +34,9 @@ class AgentBaseClass:
 		#for each string, check against vector matrix and delete bad strings
 
 		return sents
-		
-		#Verb Prep Noun	
+	
+        #look in box
+	#Verb Prep Noun, return list	
 	def getVPN(self):
 		sents = []
 		
@@ -44,3 +49,59 @@ class AgentBaseClass:
 		#for each string, check against vector matrix and delete bad strings
 
 		return sents
+
+
+	#fill a dictionary with a <str,set> combo
+	def updatePrepositionDictionary(self,verb,prepSet):
+		self.VPD[verb] = prepSet
+		pass
+
+
+	#using the dictionary, return a list of commands
+	def getCommands(self):
+	
+		sents = []
+		#Verb
+		for v in self.verb_list:
+			#Noun
+			for obj in self.object_list:
+				#Dictionary of prepositions according to verbs
+				for key in VPD.keys:
+					#set or list of prepositions
+					for prep in VPD[key]:
+						#second Noun
+						for obj2 in self.object_list:
+							sentence = "{} {} {} {}". format(v, obj, prep, obj2)
+							sents.append(sentence)
+		
+		return sents
+							
+							
+	#using the dictionary, return a list of commands
+	def getCommands(self,verbs,objects):
+	
+		sents = []
+		#Verb
+		for v in verbs:
+			#Noun
+			for obj in objects:
+				#Dictionary of prepositions according to verbs
+				for key in VPD.keys:
+					#set or list of prepositions
+					for prep in VPD[key]:
+						#second Noun
+						for obj2 in objects:
+							sentence = "{} {} {} {}". format(v, obj, prep, obj2)
+							sents.append(sentence)
+		
+		return sents
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
