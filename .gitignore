@@ -3,3 +3,5 @@
 *.py~
 *.pyc
 scores.txt
+agents/scholar
+agents/__pycache__
