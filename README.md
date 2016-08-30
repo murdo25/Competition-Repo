@@ -52,7 +52,8 @@ Additional information can be found on the [competition website](http://atkrye.g
 
 <b><h5>To run this code:</h5></b>
 
-Verify you have installed the following dependencies:
+1. Verify you have installed the following dependencies:
+
 python3 (`sudo apt-get install python3-pip`)
 
 numpy (`sudo pip3 install numpy`)
@@ -65,6 +66,6 @@ nltk (`sudo pip3 install nltk`)
 
 nltk datasets (`python3 -m nltk.downloader all`)
 
-Clone [Scholar](https://github.com/danielricks/scholar) into the agents/scholar folder.
+2. Clone [Scholar](https://github.com/danielricks/scholar) into the agents/scholar folder.
 
-Go to the "agents" folder. Run `python3 ZpletIOAgent.py`.
+3. Go to the "agents" folder. Run `python3 ZpletIOAgent.py`.
