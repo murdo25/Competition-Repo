@@ -66,7 +66,7 @@ class AgentBaseClass:
 			#Noun
 			for obj in self.object_list:
 				#Dictionary of prepositions according to verbs
-				for key in self.VPD.keys:
+				for key in self.VPD.keys():
 					#set or list of prepositions
 					for prep in self.VPD[key]:
 						#second Noun
@@ -80,13 +80,21 @@ class AgentBaseClass:
 	#using the dictionary, return a list of commands
 	def getCommands(self,verbs,objects):
 	
+		if '' in verbs:
+			verbs.remove('')
+		if '' in objects:
+			objects.remove('')	
+
 		sents = []
 		#Verb
+		#print (verbs)
+		#print (objects)
+		#print (self.VPD)
 		for v in verbs:
 			#Noun
 			for obj in objects:
 				#Dictionary of prepositions according to verbs
-				for key in self.VPD.keys:
+				for key in self.VPD.keys():
 					#set or list of prepositions
 					for prep in self.VPD[key]:
 						#second Noun

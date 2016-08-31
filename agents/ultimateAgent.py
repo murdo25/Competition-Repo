@@ -24,10 +24,21 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 
 
 	def __init__(self):
-		self.scholar = sch.Scholar()
+		print("Initializing agent")
+		
+		agentBaseClass.AgentBaseClass.__init__(self)
+		
+		self.evaluation_metric = "ANALOGY"
+		#self.evaluation_metric = "WIKIPEDIA_COOCCURANCE"
+		#self.evaluation_metric = "DEPENDENCIES"
 		#self.verb_list=self.scholar.get_most_common_words('VB', 200)
-		self.verb_list = ['throw', 'spray', 'stab', 'slay', 'open', 'pierce', 'thrust', 'exorcise', 'place', 'jump', 'take', 'make', 'read', 'strangle', 'swallow', 'slide', 'wave', 'look', 'dig', 'pull', 'put', 'rub', 'fight', 'ask', 'score', 'apply', 'take', 'knock', 'block', 'kick', 'step', 'break', 'wind', 'blow', 'crack', 'drop', 'blast', 'leave', 'yell', 'skip', 'stare', 'hurl', 'hit', 'kill', 'glass', 'engrave', 'bottle', 'pour', 'feed', 'hatch', 'swim', 'spray', 'melt', 'cross', 'insert', 'lean', 'sit', 'move', 'fasten', 'play', 'drink', 'climb', 'walk', 'consume', 'kiss', 'startle', 'shout', 'close', 'cast', 'set', 'drive', 'lift', 'strike', 'startle', 'catch', 'board', 'speak', 'think', 'get', 'answer', 'tell', 'feel', 'get', 'turn', 'listen', 'read', 'watch', 'wash', 'purchase', 'do', 'sleep', 'fasten', 'drag', 'swing', 'empty', 'switch', 'slip', 'twist', 'shoot', 'slice', 'read', 'burn', 'hop', 'rub', 'ring', 'swipe', 'display', 'scrub', 'hug', 'operate', 'touch', 'sit', 'sweep', 'fix', 'walk', 'crack', 'skip']
-		self.verb_list += ['wait', 'point', 'light', 'unlight', 'use', 'ignite', 'wear', 'remove', 'unlock', 'lock', 'examine', 'exit']
+
+		print("Verb evaluation strategy is " + self.evaluation_metric)
+		
+		self.manipulation_list = ['throw', 'spray', 'stab', 'slay', 'open', 'pierce', 'thrust', 'exorcise', 'place', 'jump', 'take', 'make', 'read', 'strangle', 'swallow', 'slide', 'wave', 'look', 'dig', 'pull', 'put', 'rub', 'fight', 'ask', 'score', 'apply', 'take', 'knock', 'block', 'kick', 'step', 'break', 'wind', 'blow', 'crack', 'drop', 'blast', 'leave', 'yell', 'skip', 'stare', 'hurl', 'hit', 'kill', 'glass', 'engrave', 'bottle', 'pour', 'feed', 'hatch', 'swim', 'spray', 'melt', 'cross', 'insert', 'lean', 'sit', 'move', 'fasten', 'play', 'drink', 'climb', 'walk', 'consume', 'kiss', 'startle', 'shout', 'close', 'cast', 'set', 'drive', 'lift', 'strike', 'startle', 'catch', 'board', 'speak', 'think', 'get', 'answer', 'tell', 'feel', 'get', 'turn', 'listen', 'read', 'watch', 'wash', 'purchase', 'do', 'sleep', 'fasten', 'drag', 'swing', 'empty', 'switch', 'slip', 'twist', 'shoot', 'slice', 'read', 'burn', 'hop', 'rub', 'ring', 'swipe', 'display', 'scrub', 'hug', 'operate', 'touch', 'sit', 'sweep', 'fix', 'walk', 'crack', 'skip']
+		self.manipulation_list += ['wait', 'point', 'light', 'unlight', 'use', 'ignite', 'wear', 'remove', 'unlock', 'lock', 'examine', '']
+		self.navigation_list = ['north', 'south', 'west', 'east', 'northwest', 'southwest', 'northeast', 'southeast', 'up', 'down', 'enter', 'exit']
+		self.verb_list = self.manipulation_list + self.navigation_list
 	
 		if 'save' in self.verb_list:
 			self.verb_list.remove('save') #to prevent agent from trying to save the game...		
@@ -36,17 +47,32 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 		if 'restart' in self.verb_list:
 			self.verb_list.remove('restart') #to prevent agent from trying to restart the game...		
 
-		self.verb_list.append('north')
-		self.verb_list.append('south')
-		self.verb_list.append('west')
-		self.verb_list.append('east')
-		self.verb_list.append('northwest')
-		self.verb_list.append('southwest')
-		self.verb_list.append('northeast')
-		self.verb_list.append('southeast')
-		self.verb_list.append('up')
-		self.verb_list.append('down')
-		self.verb_list.append('')
+		if self.evaluation_metric == "ANALOGY":
+			print("loading word2vec data...")
+			self.scholar = sch.Scholar()
+		
+		if self.evaluation_metric == "WIKIPEDIA_COOCCURANCE":
+			self.corpus_name = "corpora/Wikipedia_first_100000_lines.txt"
+			#self.corpus_name = "corpora/classic_books.txt"
+			self.totalCount = {}
+			for v in self.verb_list:
+				self.totalCount[v] = 0.0
+			f = open(self.corpus_name)
+			for line in f:
+				for v in self.verb_list:				
+					if v in line:
+						self.totalCount[v] = self.totalCount[v] + 1
+			f.close()
+
+		if self.evaluation_metric == "DEPENDENCIES":
+			self.verbFinder = verbFinder.verbFinder()
+			#TODO: update to use real preposition dependencies
+			for v in self.verb_list:
+				self.updatePrepositionDictionary(v, self.preposition_list)
+		else:
+			for v in self.verb_list:
+				self.updatePrepositionDictionary(v, self.preposition_list)
+
 	
 
 		self.num_states = 5000
@@ -56,27 +82,17 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 		self.last_object = ''
 		self.last_action = 'look'
 		self.inventory_list = []
+		self.inventory_text = ""
 		self.TWO_WORD_OBJECTS = True
 		self.inventory_count = 0
 		self.look_flag = 0
 		self.exploration_counts = {}
-
-		#self.corpus_name = "corpora/Wikipedia_first_100000_lines.txt"
-		self.corpus_name = "corpora/classic_books.txt"
-		self.totalCount = {}
-		for v in self.verb_list:
-			self.totalCount[v] = 0.0
-		f = open(self.corpus_name)
-		for line in f:
-			for v in self.verb_list:				
-				if v in line:
-					self.totalCount[v] = self.totalCount[v] + 1
-		f.close()
-
-		#self.verbFiner = verbFinder.verbFinder()
+		self.visited_states = []
 
 		self.alreadyTried = {}
 		self.success = {}
+
+
 
 
 	def state_index(self, narrative):
@@ -141,46 +157,54 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 
 		obj = obj.lower()
 
-		#matching_verbs = self.verbFinder.verbsForWord(obj, 100)
-		
-		matching_verbs = self.scholar.get_verbs(obj, 30)
-		for i in range(len(matching_verbs)):
-			matching_verbs[i] = matching_verbs[i][:-3] 
+		if self.evaluation_metric == "DEPENDENCIES":
+			matching_verbs = self.verbFinder.verbsForWord(obj, 100)
+		elif self.evaluation_metric == "ANALOGY":
+			matching_verbs = self.scholar.get_verbs(obj, 30)
+			for i in range(len(matching_verbs)):
+				matching_verbs[i] = matching_verbs[i][:-3] 
+		elif self.evaluation_metric == "WIKIPEDIA_COOCCURANCE":
+			matching_verbs = self.get_wikipedia_verbs(obj, 10)
+		else:
+			print("ERROR: No match for evaluation metric " + self.evaluation_metric)
+			input("")		
 
-		#matching_verbs = self.get_wikipedia_verbs(obj, 10)
-		
 		tryList = []
 
+		#we first try to manipulate the objects extracted from the game text
 		for v in matching_verbs:
-			if v in self.verb_list:
+			if v in self.manipulation_list:
 				if self.alreadyTried[game_text][input_object][v] == 0:
 					tryList.append(v)
 
 		#certain verbs are just always in the try list
 		#because they are so useful
-		if 'open' not in tryList and self.alreadyTried[game_text][input_object]['open'] == 0:
+		if 'open' not in tryList and 'open' in self.alreadyTried[game_text][input_object].keys() and self.alreadyTried[game_text][input_object]['open'] == 0:
 			tryList.append('open')
-		if 'get' not in tryList and self.alreadyTried[game_text][input_object]['get'] == 0:
+		if 'get' not in tryList and 'get' in self.alreadyTried[game_text][input_object].keys() and self.alreadyTried[game_text][input_object]['get'] == 0:
 			tryList.append('get')
-		if 'put' not in tryList and self.alreadyTried[game_text][input_object]['put'] == 0:
+		if 'put' not in tryList and 'put' in self.alreadyTried[game_text][input_object].keys() and self.alreadyTried[game_text][input_object]['put'] == 0:
 			tryList.append('put')
 
+		#if we've tried everything we can think of, then we proceed
+		#to try either (A) Things that worked, or (B) navigate elsewhere
 		if len(tryList) == 0:
 			if obj not in self.success[game_text].keys():
 				self.success[game_text][obj] = {}
 				for v in self.verb_list:
 					self.success[game_text][obj][v] = 0.0
-			tryList = list(self.success[game_text][obj].keys())
+			tryList = list(self.success[game_text][obj].keys()) + self.navigation_list
 
+		#if nothing seems to be working, then navigate away
 		if len(tryList) == 0:
-			tryList = self.verb_list
+			tryList = self.navigation_list
 
 #		print("GETVERB:")
-		print("Active object is " + obj)
-		print("Here are the verbs returned by Scholar:")
-		print(matching_verbs)
-		print("I will select randomly from one of these verbs:")
-		print(tryList)
+#		print("Active object is " + obj)
+#		print("Here are the verbs returned by Scholar:")
+#		print(matching_verbs)
+#		print("I will select randomly from one of these verbs:")
+#		print(tryList)
 #		input("pause")
 
 		return tryList
@@ -200,7 +224,8 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 
 	def chooseAction(self, game_text):
 
-		objects = self.find_objects(game_text) + self.inventory_list + ['']
+		#objects = self.find_objects(game_text) + self.inventory_list + ['']
+		objects = self.find_objects(game_text) + ['']
 		obj = rand.choice(objects)
 
 		#if this is a new state or object, then
@@ -235,36 +260,37 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 		
 		#choose the next action
 		r = rand.randint(0, 1)
-		if r == 0:
-			#get a verb object combo
+		if r == 0 or rand == 1 and obj != '':
+			#get a verb/preposition/object combo
+			commands = self.getCommands(self.getTryList(game_text, obj), self.find_objects(game_text) + self.inventory_list)
+			action = rand.choice(commands)
+		#	self.last_verb = action.split()[:-1]
+		#	self.last_object = [obj]
+		#	self.alreadyTried[game_text][last_object][self.last_verb] = 1
+		#	print("COMMANDS")
+		#	print(commands)
+		#	print("action is " + action)
+		#	print("last verb is " + self.last_verb)
+		#	print("Last object is " + self.last_object)
+		#	input("pause")
+			return action
+		else:
+			#get a verb object combination
 			vrb = self.getVerb(game_text, obj)		
 			self.alreadyTried[game_text][obj][vrb] = 1
 			self.last_verb = vrb
 			self.last_object = obj
 			return vrb + ' ' + obj
-		else:
-			#get a verb/preposition combo
-			commands = self.getCommands(self.getTryList(game_text, obj), [obj])
-			action = rand.choice(commands)
-		#	self.last_verb = action.split()[:-1]
-		#	self.last_object = [obj]
-		#	self.alreadyTried[game_text][last_object][self.last_verb] = 1
-			print("COMMANDS")
-			print(commands)
-			print("action is " + action)
-		#	print("last verb is " + self.last_verb)
-		#	print("Last object is " + self.last_object)
-			input("pause")
-			return action
 			
 
 	def action(self, narrative):
 		if self.last_action == "inventory":
 			self.inventory_list = self.find_objects(narrative)
+			self.inventory_text = narrative
 		elif self.last_action == "look":
 			self.last_state = self.current_state
-			self.current_state = narrative	
-			
+			self.current_state = narrative + self.inventory_text	
+
 		if self.look_flag == 1:
 			self.look_flag = 0
 			self.last_action = "look"
@@ -274,18 +300,26 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 			self.inventory_count = 0
 			self.last_action = "inventory"
 			return "inventory"
-		
+	
 		#update flags	
 		self.look_flag = 1
 		self.inventory_count = self.inventory_count + 1
 		
-		#select an action
-		self.last_action = self.chooseAction(self.current_state)
-#		print ("Game text is " + narrative) 
-#		print ("State is " + self.current_state) 
-#		print ("Inventory is ")
-#		print (self.inventory_list)
-		print ("Action is " + self.last_action.strip()) 
-#		input("pause")				
+		#try 'get all' in each new state	
+		if self.current_state not in self.visited_states:
+			self.visited_states.append(self.current_state)
+			self.last_action = 'get all'
+			self.last_verb = 'get'
+			self.last_object = 'all'
+		else:			
+			#select an action
+			self.last_action = self.chooseAction(self.current_state)
+#			print ("Game text is " + narrative) 
+#			print ("State is " + self.current_state) 
+#			print ("Inventory is ")
+#			print (self.inventory_list)
+			print ("Action is " + self.last_action.strip()) 
+#			input("pause")				
+		
 		return self.last_action.strip()
 

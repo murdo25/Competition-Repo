@@ -28,7 +28,7 @@ class verbFinder:
 	def numDependencies(self, verb, word):
 		print(self.verbs[verb][word])	
 
-	def print(self):
+	def printList(self):
 		for i in range(len(self.list)):
 			print(self.list[i])
 
