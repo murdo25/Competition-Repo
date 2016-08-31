@@ -18,6 +18,7 @@ import time
 import random as rand
 import scholar.scholar as sch
 import nltk
+import re
 import verbFinder
 
 class UltimateAgent(agentBaseClass.AgentBaseClass):
@@ -50,28 +51,38 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 			print("loading word2vec data...")
 			self.scholar = sch.Scholar()
 		
-		if self.evaluation_metric == "WIKIPEDIA_COOCCURANCE":
-			self.corpus_name = "corpora/Wikipedia_first_100000_lines.txt"
-			#self.corpus_name = "corpora/classic_books.txt"
-			self.totalCount = {}
-			for v in self.verb_list:
-				self.totalCount[v] = 0.0
-			f = open(self.corpus_name)
-			for line in f:
-				for v in self.verb_list:				
-					if v in line:
-						self.totalCount[v] = self.totalCount[v] + 1
-			f.close()
+		#if self.evaluation_metric == "WIKIPEDIA_COOCCURENCE":
+		#	self.corpus_name = "corpora/Wikipedia_first_100000_lines.txt"
+		#	#self.corpus_name = "corpora/classic_books.txt"
+		#	self.totalCount = {}
+		#	for v in self.verb_list:
+		#		self.totalCount[v] = 0.0
+		#	f = open(self.corpus_name)
+		#	for line in f:
+		#		for v in self.verb_list:				
+		#			if v in line:
+		#				self.totalCount[v] = self.totalCount[v] + 1
+		#	f.close()
 
-		if self.evaluation_metric == "DEPENDENCIES":
-			self.verbFinder = verbFinder.verbFinder()
+		#if self.evaluation_metric == "DEPENDENCIES":
+		#	self.verbFinder = verbFinder.verbFinder()
 		
 		for v in self.verb_list:
-			self.updatePrepositionDictionary(v, self.preposition_list)
+			#self.verbFinder = verbFinder.verbFinder()
+			#words = self.verbFinder.wordsForVerb(v)
+			#preps = []
+			#for w in words:
+			#	if w in self.preposition_list:
+			#		preps.append(w)
+			#self.updatePrepositionDictionary(v, preps)
+			self.updatePrepositionDictionary(v, self.verb_list)
+
 
 		self.num_states = 10000
 		self.last_state = ''
 		self.current_state = ''
+		self.last_narrative = ''
+		self.current_narrative = ''
 		self.last_verb = ''
 		self.last_object = ''
 		self.last_action = 'look'
@@ -81,9 +92,13 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 		self.inventory_count = 0
 		self.look_flag = 0
 		self.get_flag = 0
+		self.packrat_count = 0 #am I just getting all all the time? (because the game narrative is too variable)
+		self.inventory_count = 0 #am I just checking inventory? (because the game narrative is too variable)
 		self.game_steps = 0
 		self.exploration_counts = {}
 		self.visited_states = []
+		self.visited_narratives = []
+		self.verbs_for_noun = {}
 
 		self.alreadyTried = {}
 		self.success = {}
@@ -154,9 +169,13 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 		if self.evaluation_metric == "DEPENDENCIES":
 			matching_verbs = self.verbFinder.verbsForWord(obj, 30)
 		elif self.evaluation_metric == "ANALOGY":
-			matching_verbs = self.scholar.get_verbs(obj, 30)
-			for i in range(len(matching_verbs)):
-				matching_verbs[i] = matching_verbs[i][:-3] 
+			if obj in self.verbs_for_noun.keys():
+				matching_verbs = self.verbs_for_noun[obj]
+			else:
+				matching_verbs = self.scholar.get_verbs(obj, 30)
+				for i in range(len(matching_verbs)):
+					matching_verbs[i] = matching_verbs[i][:-3]
+				self.verbs_for_noun[obj] = matching_verbs
 		elif self.evaluation_metric == "WIKIPEDIA_COOCCURANCE":
 			matching_verbs = self.get_wikipedia_verbs(obj, 30)
 		else:
@@ -211,6 +230,12 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 
 	def chooseAction(self, game_text):
 
+		if self.packrat_count > 0:
+			self.packrat_count -= 1 #we've done something besides just 'get all'	
+
+		if self.inventory_count > 0:
+			self.inventory_count -= 1 #we've done something besides just 'get all'	
+		
 		objects = self.find_objects(game_text) + ['']
 		obj = rand.choice(objects)
 
@@ -245,7 +270,7 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 			self.success[self.last_state][self.last_object][self.last_verb] = 1
 		
 		#choose the next action
-		r = rand.randint(0, 2)
+		r = rand.randint(0, 6)
 		if r == 0 and obj != '':
 			#get a verb/preposition/object combo
 			commands = self.getCommands(self.getTryList(game_text, obj), self.find_objects(game_text) + self.inventory_list)
@@ -281,7 +306,12 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 			self.get_flag = 0
 		elif self.last_action == "look":
 			self.last_state = self.current_state
-			self.current_state = narrative + self.inventory_text	#state is the narrative plus inventory
+			self.last_narrative = self.current_narrative
+			self.current_narrative = re.sub(r'\d+', '', narrative)
+			#state is the narrative plus inventory
+			self.current_state = re.sub(r'\d+', '', narrative + self.inventory_text)
+			#print(self.current_state)
+			#input("pause")
 
 		#execute 'look' command every other step.
 		#(This helps to make the state space more observable)
@@ -296,18 +326,23 @@ class UltimateAgent(agentBaseClass.AgentBaseClass):
 		#(inventory results are included as part of the state space)
 		if self.last_verb == 'get':
 			self.get_flag = 1
-		if self.get_flag > 0:
+		if self.get_flag > 0 and self.inventory_count < 5:
 			self.last_action = "inventory"
 			self.last_verb = "inventory"
+			self.inventory_count += 1
+			self.get_flag = 0
 			return "inventory"
 	
 		#try 'get all' in each new state	
-		if self.current_state not in self.visited_states:
-			self.visited_states.append(self.current_state)
+		if self.current_narrative not in self.visited_narratives and self.packrat_count < 10:
+			self.visited_narratives.append(self.current_narrative)
 			self.last_action = 'get all'
 			self.last_verb = 'get'
 			self.last_object = 'all'
 			self.get_flag = 1
+			self.packrat_count += 1
+			if self.packrat_count > 5: 
+				self.packrat_count = 100
 		else:			
 			#select an action
 			self.last_action = self.chooseAction(self.current_state)
