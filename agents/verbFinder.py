@@ -5,11 +5,11 @@ import random as rand
 
 class verbFinder:
 
-	def __init__(self, u_mod):
+	def __init__(self):
 		self.verbs = {}
 		self.nouns = {}
 		self.preps = {}
-		self.unique_mod = u_mod
+		self.unique_mod = ''
 
 	def saveNounsToFile(self):
 		pickle.dump(self.nouns, open(self.unique_mod + '_nouns.p', 'wb'))
@@ -130,12 +130,4 @@ class verbFinder:
 				sentence = [] #beginning of new sentence
 		f.close()
 
-v = verbFinder(sys.argv[1])
-v.parseFile(sys.argv[2])
-print(v.preps)
-v.saveNounsToFile()
-v.savePrepsToFile()
-v.saveVerbsToFile()
-#v.addNounsFromFile('gg_nouns.p')
-#v.addPrepsFromFile('gg_preps.p')
-#v.addVerbsFromFile('gg_verbs.p')
+

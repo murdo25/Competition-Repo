@@ -21,7 +21,7 @@ import nltk
 import re
 import verbFinder
 
-class UltimateAgent(agentBaseClass.AgentBaseClass):
+class ParseyPreps(agentBaseClass.AgentBaseClass):
 
 
 	def __init__(self):
